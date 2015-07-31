@@ -22,8 +22,13 @@ namespace PlayingWithAVPlayer
         {
             base.ViewDidLoad();
 
-            var audioSession = AVAudioSession.SharedInstance();
+            AVAudioSession audioSession = AVAudioSession.SharedInstance();
             audioSession.SetCategory(AVAudioSessionCategory.Playback);
+            audioSession.BeginInterruption += AudioSession_BeginInterruption;
+            audioSession.EndInterruption += AudioSession_EndInterruption;
+            NSNotificationCenter notificationCenter = NSNotificationCenter.DefaultCenter;
+            notificationCenter.AddObserver(this, new ObjCRuntime.Selector("routeChanged:"), 
+                AVAudioSession.RouteChangeNotification, null);
             audioSession.SetActive(true);
 
             playPauseButton.TouchUpInside += OnButtonClick;
@@ -51,6 +56,32 @@ namespace PlayingWithAVPlayer
             rcc.PlayCommand.Enabled = true;
         }
 
+        void AudioSession_BeginInterruption(object sender, EventArgs e)
+        {
+            Console.WriteLine("Begin interruption");
+            player.Dispose();
+            playPauseButton.SetTitle("Play", UIControlState.Normal);
+        }
+
+        void AudioSession_EndInterruption(object sender, EventArgs e)
+        {
+            Console.WriteLine("End interruption");
+        }
+
+        [Export("routeChanged:")]
+        public void RouteChanged(NSNotification notification)
+        {
+            var reason = notification.UserInfo.ValueForKey(new NSString("AVAudioSessionRouteChangeReasonKey"));
+            if (reason.Description == "2") // Headphones were unplugged
+            {
+                if (player != null)  // player will be null if user has not hit play
+                {
+                    player.Dispose(); 
+                    InvokeOnMainThread(() => playPauseButton.SetTitle("Play", UIControlState.Normal));
+                }
+            }
+        }
+
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
@@ -71,10 +102,8 @@ namespace PlayingWithAVPlayer
             // Release any cached data, images, etc that aren't in use.
         }
 
-
         public override void RemoteControlReceived(UIEvent theEvent)
         {
-//            base.RemoteControlReceived(theEvent);
             if (theEvent.Type != UIEventType.RemoteControl)
             {
                 return;
@@ -87,7 +116,6 @@ namespace PlayingWithAVPlayer
                 case UIEventSubtype.RemoteControlTogglePlayPause:
                     if (player?.Rate > 0 && player.Error == null) // player is playing
                     {
-                        RemoveObservers(player);
                         player.Pause();
                         player.Dispose();
                         playPauseButton.SetTitle("Play", UIControlState.Normal);
@@ -95,7 +123,6 @@ namespace PlayingWithAVPlayer
                     else
                     {
                         player = new AVPlayer(source);
-                        AddObservers(player);
                         player.Play();
                         playPauseButton.SetTitle("Stop", UIControlState.Normal);
                     }
@@ -103,7 +130,6 @@ namespace PlayingWithAVPlayer
 
                 case UIEventSubtype.RemoteControlPause:
                 case UIEventSubtype.RemoteControlStop:
-                    RemoveObservers(player); // For some reason, observers must be removed before player is paused.
                     player.Pause();
                     player.Dispose();
                     playPauseButton.SetTitle("Play", UIControlState.Normal);
@@ -116,34 +142,11 @@ namespace PlayingWithAVPlayer
                     if (!(player?.Rate > 0) && player.Error == null)
                     {
                         player = new AVPlayer(source);
-                        AddObservers(player);
                         player.Play();
                         playPauseButton.SetTitle("Stop", UIControlState.Normal);
                     }
                     break;
             }
-        }
-
-        void AddObservers(AVPlayer observedPlayer)
-        {
-//            return;
-            observedPlayer.AddObserver(observer: this, keyPath: new NSString("error"),
-                options: NSKeyValueObservingOptions.OldNew, context: IntPtr.Zero);
-            observedPlayer.AddObserver(observer: this, keyPath: new NSString("status"),
-                options: NSKeyValueObservingOptions.OldNew, context: IntPtr.Zero);
-            observedPlayer.AddObserver(observer: this, keyPath: new NSString("rate"),
-                options: NSKeyValueObservingOptions.OldNew, context: IntPtr.Zero);
-        }
-
-        void RemoveObservers(AVPlayer observedPlayer)
-        {
-//            return;
-            observedPlayer.RemoveObserver(observer: this, keyPath: new NSString("error"),
-                context: IntPtr.Zero);
-            observedPlayer.RemoveObserver(observer: this, keyPath: new NSString("status"),
-                context: IntPtr.Zero);
-            observedPlayer.RemoveObserver(observer: this, keyPath: new NSString("rate"),
-                context: IntPtr.Zero);
         }
 
         void OnButtonClick(object sender, EventArgs e)
@@ -153,32 +156,15 @@ namespace PlayingWithAVPlayer
                 // Player is playing.  Let's stop it.
                 Debug.WriteLine("OnButtonClick() - stopping player");
                 player.Pause();
-                RemoveObservers(player);
                 player.Dispose();
                 playPauseButton.SetTitle("Play", UIControlState.Normal);
             }
             else
             {
-                Debug.WriteLine("OnButtonClick() starting player");
+                Debug.WriteLine("OnButtonClick() - starting player");
                 player = new AVPlayer(source);
-                AddObservers(player);
                 player.Play();
                 playPauseButton.SetTitle("Stop", UIControlState.Normal);
-            }
-        }
-
-        public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
-        {
-            Console.WriteLine("Old value of '{0}' = {1}; New value of '{0}' = {2}", 
-                keyPath, change["old"], change["new"]);
-
-            if (keyPath == "rate" && !(player.Rate > 0))
-            {
-                // User has stopped audio outside the app, 
-                // perhaps by using iTunes to play something else.
-                RemoveObservers(player);
-                player.Dispose();
-                playPauseButton.SetTitle("Play", UIControlState.Normal);
             }
         }
             
