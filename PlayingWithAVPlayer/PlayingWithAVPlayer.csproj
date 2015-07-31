@@ -64,6 +64,11 @@
     <MtouchProfiling>true</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +77,12 @@
     <Reference Include="Xamarin.iOS" />
     <Reference Include="Calabash">
       <HintPath>..\packages\Xamarin.TestCloud.Agent.0.14.1\lib\Xamarin.iOS10\Calabash.dll</HintPath>
+    </Reference>
+    <Reference Include="PLCrashReporterUnifiedBinding">
+      <HintPath>..\Components\xamarin-insights-1.10.4\lib\ios-unified\PLCrashReporterUnifiedBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\Components\xamarin-insights-1.10.4\lib\ios-unified\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -95,4 +106,10 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <ItemGroup>
+    <XamarinComponentReference Include="xamarin-insights">
+      <Version>1.10.4</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
 </Project>

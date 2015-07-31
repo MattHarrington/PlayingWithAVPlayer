@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsightsSample.Android", "InsightsSample.Android.csproj", "{C9FE38F8-560C-4133-AA1E-881028ACB29F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		Ad-Hoc|iPhoneSimulator = Ad-Hoc|iPhoneSimulator
+		AppStore|iPhone = AppStore|iPhone
+		AppStore|iPhoneSimulator = AppStore|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.AppStore|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.AppStore|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Release|iPhone.Build.0 = Release|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{C9FE38F8-560C-4133-AA1E-881028ACB29F}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = InsightsSample.Android.csproj
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

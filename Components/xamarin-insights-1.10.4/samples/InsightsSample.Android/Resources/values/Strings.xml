@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Hello">Xamarin Insights sample has no UI</string>
+    <string name="ApplicationName">InsightsSample.Android</string>
+</resources>
