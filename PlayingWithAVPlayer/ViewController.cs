@@ -22,6 +22,11 @@ namespace PlayingWithAVPlayer
         {
             base.ViewDidLoad();
 
+            // Must call certain methods in Reachability before ReachabilityChanged
+            // will work. See https://forums.xamarin.com/discussion/15291/reachability-changed-event-never-fires
+            NetworkStatus networkStatus = Reachability.RemoteHostStatus();
+            Reachability.ReachabilityChanged += ReachabilityChanged;
+
             AVAudioSession audioSession = AVAudioSession.SharedInstance();
             audioSession.SetCategory(AVAudioSessionCategory.Playback);
             audioSession.BeginInterruption += AudioSession_BeginInterruption;
@@ -54,6 +59,22 @@ namespace PlayingWithAVPlayer
             // You must enable a command so that others can be disabled?
             // See http://stackoverflow.com/a/28925369.
             rcc.PlayCommand.Enabled = true;
+        }
+
+        void ReachabilityChanged (object sender, EventArgs e)
+        {
+            Debug.WriteLine("Reachability changed");
+            NetworkStatus ics = Reachability.InternetConnectionStatus();
+            switch (ics)
+            {
+                case NetworkStatus.NotReachable:
+                    Debug.WriteLine("Network changed - NotReachable");
+                    break;
+                case NetworkStatus.ReachableViaCarrierDataNetwork:
+                case NetworkStatus.ReachableViaWiFiNetwork:
+                    Debug.WriteLine("Network changed - Reachable");
+                    break;
+            }
         }
 
         void AudioSession_BeginInterruption(object sender, EventArgs e)
@@ -151,6 +172,11 @@ namespace PlayingWithAVPlayer
 
         void OnButtonClick(object sender, EventArgs e)
         {
+            if (!Reachability.IsHostReachable("live2.artoflogic.com"))
+            {
+                Debug.WriteLine("Host unreachable");
+                return;
+            }
             if (player?.Rate > 0 && player.Error == null)
             {
                 // Player is playing.  Let's stop it.
