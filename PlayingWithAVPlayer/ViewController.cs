@@ -63,12 +63,18 @@ namespace PlayingWithAVPlayer
 
         void ReachabilityChanged (object sender, EventArgs e)
         {
-            Debug.WriteLine("Reachability changed");
+            Debug.WriteLine("ReachabilityChanged event fired");
             NetworkStatus ics = Reachability.InternetConnectionStatus();
             switch (ics)
             {
                 case NetworkStatus.NotReachable:
                     Debug.WriteLine("Network changed - NotReachable");
+                    if (player != null)
+                    {
+                        player.Pause();
+                        player.Dispose();
+                        playPauseButton.SetTitle("Play", UIControlState.Normal);
+                    }
                     break;
                 case NetworkStatus.ReachableViaCarrierDataNetwork:
                 case NetworkStatus.ReachableViaWiFiNetwork:
